@@ -24,13 +24,13 @@ var expectThrow = async function (promise) {
   assert.fail('Expected throw not received');
 };
 
-contract('CryptoWaifusMarket-transferPunk', function (accounts) {
+contract('CryptoWaifusMarket-transferWaifu', function (accounts) {
   it("can not get transfer punk allWaifusAssigned = false", async function () {
     var contract = await CryptoWaifusMarket.deployed();
     await contract.setInitialOwner(accounts[0], 0);
     var allAssigned = await contract.allWaifusAssigned.call();
     assert.equal(false, allAssigned, "allAssigned should be false to start.");
-    await expectThrow(contract.transferPunk(accounts[1], 0));
+    await expectThrow(contract.transferWaifu(accounts[1], 0));
   }),
     it("can transfer a punk to someone else", async function () {
       var contract = await CryptoWaifusMarket.deployed();
@@ -38,26 +38,26 @@ contract('CryptoWaifusMarket-transferPunk', function (accounts) {
       // Initial owner set in previous test :|
       // await contract.setInitialOwner(accounts[0], 0);
       await contract.allInitialOwnersAssigned();
-      await contract.transferPunk(accounts[1], 0);
+      await contract.transferWaifu(accounts[1], 0);
 
       var owner = await contract.punkIndexToAddress.call(0);
-      assert.equal(owner, accounts[1], "Punk not owned by transfer recipient");
+      assert.equal(owner, accounts[1], "Waifu not owned by transfer recipient");
 
       var balance = await contract.balanceOf.call(accounts[0]);
       // console.log("Balance acc0: " + balance);
-      assert.equal(balance.valueOf(), 0, "Punk balance account 0 incorrect");
+      assert.equal(balance.valueOf(), 0, "Waifu balance account 0 incorrect");
       var balance1 = await contract.balanceOf.call(accounts[1]);
       // console.log("Balance acc1: " + balance1);
-      assert.equal(balance1.valueOf(), 1, "Punk balance account 1 incorrect");
+      assert.equal(balance1.valueOf(), 1, "Waifu balance account 1 incorrect");
 
     }),
     it("can not transfer someone else's punk", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await expectThrow(contract.transferPunk(accounts[2], 0));  // Now owned by account[1]
+      await expectThrow(contract.transferWaifu(accounts[2], 0));  // Now owned by account[1]
     }),
     it("can not use invalid punk index", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await expectThrow(contract.transferPunk(accounts[1], 10000));
+      await expectThrow(contract.transferWaifu(accounts[1], 10000));
     })
 
 });

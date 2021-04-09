@@ -57,7 +57,7 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
     await contract.setInitialOwner(accounts[0], 0);
     var allAssigned = await contract.allWaifusAssigned.call();
     assert.equal(false, allAssigned, "allAssigned should be false to start.");
-    await expectThrow(contract.offerPunkForSale(0, 1000));
+    await expectThrow(contract.offerWaifuForSale(0, 1000));
   }),
     it("can offer a punk", async function () {
       var contract = await CryptoWaifusMarket.deployed();
@@ -66,11 +66,11 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
       await contract.setInitialOwner(accounts[2], 2);
       await contract.allInitialOwnersAssigned();
 
-      await contract.offerPunkForSale(0, 1000);
+      await contract.offerWaifuForSale(0, 1000);
 
       var offer = await contract.waifusOfferedForSale.call(0);
       console.log("Offer: " + offer);
-      assert.equal(true, offer[0], "Punk 0 not for sale");
+      assert.equal(true, offer[0], "Waifu 0 not for sale");
       assert.equal(0, offer[1]);
       assert.equal(accounts[0], offer[2]);
       assert.equal(1000, offer[3]);
@@ -79,7 +79,7 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
     it("can not buy a punk that is not for sale", async function () {
       var contract = await CryptoWaifusMarket.deployed();
 
-      await expectThrow(contract.buyPunk(1, 10000000));
+      await expectThrow(contract.buyWaifu(1, 10000000));
     }),
     it("can not buy a punk for too little money", async function () {
       var contract = await CryptoWaifusMarket.deployed();
@@ -87,33 +87,33 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
       var ethBalance = await web3.eth.getBalance(accounts[1]);
       console.log("Account 1 has " + ethBalance + " Wei");
       assert(ethBalance > 0);
-      await expectThrow(contract.buyPunk(0, { from: accounts[1], value: 10 }));
+      await expectThrow(contract.buyWaifu(0, { from: accounts[1], value: 10 }));
     }),
     it("can not offer a punk with an invalid index", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await expectThrow(contract.offerPunkForSale(100000, 1000));
+      await expectThrow(contract.offerWaifuForSale(100000, 1000));
     }),
     it("can not buy a punk with an invalid index", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await expectThrow(contract.buyPunk(100000, { value: 10000000 }));
+      await expectThrow(contract.buyWaifu(100000, { value: 10000000 }));
     }),
     it("can buy a punk that is for sale", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await contract.buyPunk(0, { from: accounts[1], value: 1000 });
+      await contract.buyWaifu(0, { from: accounts[1], value: 1000 });
 
       var offer = await contract.waifusOfferedForSale.call(0);
       console.log("Offer post purchase: " + offer);
-      assert.equal(false, offer[0], "Punk 0 not for sale");
+      assert.equal(false, offer[0], "Waifu 0 not for sale");
       assert.equal(0, offer[1]);
       assert.equal(0, offer[3]);
       assert.equal(NULL_ACCOUNT, offer[4]);
 
       var balance = await contract.balanceOf.call(accounts[0]);
       // console.log("Balance acc0: " + balance);
-      assert.equal(balance.valueOf(), 0, "Punk balance account 0 incorrect");
+      assert.equal(balance.valueOf(), 0, "Waifu balance account 0 incorrect");
       var balance1 = await contract.balanceOf.call(accounts[1]);
       // console.log("Balance acc1: " + balance1);
-      assert.equal(balance1.valueOf(), 2, "Punk balance account 1 incorrect");
+      assert.equal(balance1.valueOf(), 2, "Waifu balance account 1 incorrect");
 
       var balanceToWidthdraw = await contract.pendingWithdrawals.call(
         accounts[0]
@@ -139,7 +139,7 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
     it("can offer for sale then withdraw", async function () {
       var contract = await CryptoWaifusMarket.deployed();
 
-      await contract.offerPunkForSale(1, 1333, { from: accounts[1] });
+      await contract.offerWaifuForSale(1, 1333, { from: accounts[1] });
 
       var offer = await contract.waifusOfferedForSale.call(1);
       console.log("Offer: " + offer);
@@ -160,12 +160,12 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
       assert.equal(NULL_ACCOUNT, offerPost[4]);
 
       // Can't buy it either
-      await expectThrow(contract.buyPunk(1, { value: 10000000 }));
+      await expectThrow(contract.buyWaifu(1, { value: 10000000 }));
     }),
     it("can offer for sale to specific account", async function () {
       var contract = await CryptoWaifusMarket.deployed();
 
-      await contract.offerPunkForSaleToAddress(1, 1333, accounts[0], {
+      await contract.offerWaifuForSaleToAddress(1, 1333, accounts[0], {
         from: accounts[1],
       });
 
@@ -179,11 +179,11 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
 
       // Account 2 can't buy it
       await expectThrow(
-        contract.buyPunk(1, { from: accounts[2], value: 10000000 })
+        contract.buyWaifu(1, { from: accounts[2], value: 10000000 })
       );
 
       // Acccount 0 can though
-      await contract.buyPunk(1, { from: accounts[0], value: 1333 });
+      await contract.buyWaifu(1, { from: accounts[0], value: 1333 });
 
       var offerPost = await contract.waifusOfferedForSale.call(1);
       console.log("Offer: " + offer);
@@ -195,10 +195,10 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
 
       var balance = await contract.balanceOf.call(accounts[0]);
       // console.log("Balance acc0: " + balance);
-      assert.equal(balance.valueOf(), 1, "Punk balance account 0 incorrect");
+      assert.equal(balance.valueOf(), 1, "Waifu balance account 0 incorrect");
       var balance1 = await contract.balanceOf.call(accounts[1]);
       // console.log("Balance acc1: " + balance1);
-      assert.equal(balance1.valueOf(), 1, "Punk balance account 1 incorrect");
+      assert.equal(balance1.valueOf(), 1, "Waifu balance account 1 incorrect");
 
       var balanceToWidthdraw = await contract.pendingWithdrawals.call(
         accounts[1]
@@ -223,7 +223,7 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
     }),
     it("transfer should cancel offers", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await contract.offerPunkForSale(1, 2333);
+      await contract.offerWaifuForSale(1, 2333);
 
       var offer = await contract.waifusOfferedForSale.call(1);
       console.log("Offer: " + offer);
@@ -233,7 +233,7 @@ contract("CryptoWaifusMarket-buySellRemoveFromSale", function (accounts) {
       assert.equal(2333, offer[3]);
       assert.equal(NULL_ACCOUNT, offer[4]);
 
-      await contract.transferPunk(accounts[1], 1);
+      await contract.transferWaifu(accounts[1], 1);
 
       var offer = await contract.waifusOfferedForSale.call(1);
       console.log("Offer post transfer: " + offer);

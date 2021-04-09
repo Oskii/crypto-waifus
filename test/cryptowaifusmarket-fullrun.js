@@ -49,7 +49,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
         })
         .then(function () {
           // Try to transfer a punk from someone who doesn't own it
-          return contract.transferPunk(accounts[1], 1, { from: accounts[1] });
+          return contract.transferWaifu(accounts[1], 1, { from: accounts[1] });
         })
         .then(function (returnValue) {
           assert(false, "Was supposed to throw but didn't.");
@@ -68,7 +68,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
           console.log("Getting a bunch of waifus for account 1.");
           var promises = [];
           for (var i = 0; i < 100; i++) {
-            promises.push(contract.getPunk(1001 + i, { from: accounts[1] }));
+            promises.push(contract.getWaifu(1001 + i, { from: accounts[1] }));
           }
 
           Promise.all(promises)
@@ -82,7 +82,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
                 100,
                 "Should have 100 waifus in account 1 now."
               );
-              return contract.offerPunkForSale(1001, 10000, {
+              return contract.offerWaifuForSale(1001, 10000, {
                 from: accounts[1],
               });
             })
@@ -91,15 +91,15 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
             })
             .then(function (offer) {
               console.log("Offer for sale: " + offer);
-              assert.isOk(offer[0], "Punk was not actually for sale.");
-              assert.equal(offer[3], 10000, "Punk sale price incorrect.");
+              assert.isOk(offer[0], "Waifu was not actually for sale.");
+              assert.equal(offer[3], 10000, "Waifu sale price incorrect.");
               assert.equal(
                 offer[4],
                 NULL_ACCOUNT,
-                "Punk should be for sale to anyone."
+                "Waifu should be for sale to anyone."
               );
               // Get account 0 to buy a punk, but send too little ether and expect an exception
-              return contract.buyPunk(1001, { from: accounts[0], value: 1000 });
+              return contract.buyWaifu(1001, { from: accounts[0], value: 1000 });
             })
             .then(function () {
               // console.log("Bought punk.");
@@ -115,7 +115,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               }
               // Get account 0 to buy a punk with enough ether
               console.log("Buying punk 1001 with correct amount of ether.");
-              return contract.buyPunk(1001, {
+              return contract.buyWaifu(1001, {
                 from: accounts[0],
                 value: 10000,
               });
@@ -135,10 +135,10 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
             })
             .then(function (offer) {
               console.log("Offer for sale: " + offer);
-              assert.equal(offer[0], false, "Punk was still for sale.");
+              assert.equal(offer[0], false, "Waifu was still for sale.");
 
               console.log("Making sure punk 1001 can't be bought.");
-              return contract.buyPunk(1001, {
+              return contract.buyWaifu(1001, {
                 from: accounts[2],
                 value: 10000,
               });
@@ -157,7 +157,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               }
 
               console.log("Offer punk 1001 for sale only to account 2.");
-              return contract.offerPunkForSaleToAddress(
+              return contract.offerWaifuForSaleToAddress(
                 1001,
                 10000,
                 accounts[2],
@@ -167,7 +167,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
             })
             .then(function (address) {
               console.log("Try to get account 1 to buy punk 1001 but fail.");
-              return contract.buyPunk(1001, {
+              return contract.buyWaifu(1001, {
                 from: accounts[1],
                 value: 10000,
               });
@@ -188,7 +188,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               console.log(
                 "Buying punk 1001 with account 2 which should be allowed."
               );
-              return contract.buyPunk(1001, {
+              return contract.buyWaifu(1001, {
                 from: accounts[2],
                 value: 10000,
               });
@@ -204,7 +204,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
                 "Account 2 did not buy the punk successfully."
               );
               console.log("Offer punk 1001 again.");
-              return contract.offerPunkForSale(1001, 10000, {
+              return contract.offerWaifuForSale(1001, 10000, {
                 from: accounts[2],
               });
             })
@@ -217,7 +217,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
             })
             .then(function (offer) {
               console.log("Offer for sale: " + offer);
-              assert.equal(offer[0], false, "Punk was still for sale.");
+              assert.equal(offer[0], false, "Waifu was still for sale.");
               console.log(
                 "Check that punk purchase price is available for withdrawal."
               );
@@ -264,7 +264,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
                 "Account 1 balance incorrect after withdrawal."
               );
             });
-          // return contract.nextPunkIndexToAssign();
+          // return contract.nextWaifuIndexToAssign();
         });
     }),
     it("should not be able to send bad number to setInitialOwner", function () {
@@ -288,7 +288,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
           }
           // Get account 0 to buy a punk with enough ether
           // console.log("Buying punk 1001 with account 2 which should be allowed.");
-          // return contract.buyPunk(1001, {from: accounts[2], value: 10000});
+          // return contract.buyWaifu(1001, {from: accounts[2], value: 10000});
         });
     }),
     it("only owner can call setInitialOwner", async function () {

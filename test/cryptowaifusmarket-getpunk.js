@@ -24,7 +24,7 @@ var expectThrow = async function (promise) {
   assert.fail("Expected throw not received");
 };
 
-contract("CryptoWaifusMarket-getPunk", function (accounts) {
+contract("CryptoWaifusMarket-getWaifu", function (accounts) {
   it("can not get waifus while allWaifusAssigned = false", async function () {
     var contract = await CryptoWaifusMarket.deployed();
     var balance = await contract.balanceOf.call(accounts[0]);
@@ -33,7 +33,7 @@ contract("CryptoWaifusMarket-getPunk", function (accounts) {
     var allAssigned = await contract.allWaifusAssigned.call();
     console.log("All assigned: " + allAssigned);
     assert.equal(false, allAssigned, "allAssigned should be false to start.");
-    await expectThrow(contract.getPunk(0));
+    await expectThrow(contract.getWaifu(0));
     var balance = await contract.balanceOf.call(accounts[0]);
     console.log("Balance after fail: " + balance);
   }),
@@ -42,7 +42,7 @@ contract("CryptoWaifusMarket-getPunk", function (accounts) {
 
       await contract.allInitialOwnersAssigned();
 
-      await contract.getPunk(0);
+      await contract.getWaifu(0);
       var balance = await contract.balanceOf.call(accounts[0]);
       console.log("Balance: " + balance);
       assert.equal(balance.valueOf(), 1, "Didn't get the initial punk");
@@ -52,7 +52,7 @@ contract("CryptoWaifusMarket-getPunk", function (accounts) {
       assert.equal(9999, remaining);
 
       try {
-        await contract.getPunk(0);
+        await contract.getWaifu(0);
         assert(false, "Should have thrown exception.");
       } catch (err) {
         // Should catch an exception

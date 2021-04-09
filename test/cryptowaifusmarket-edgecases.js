@@ -73,9 +73,9 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       var contract = await CryptoWaifusMarket.deployed();
       // Open up the contract for action, assign some waifus
       await contract.allInitialOwnersAssigned();
-      await contract.getPunk(1001, { from: accounts[1] });
-      await contract.getPunk(1002, { from: accounts[5] });
-      await contract.getPunk(1003, { from: accounts[8] });
+      await contract.getWaifu(1001, { from: accounts[1] });
+      await contract.getWaifu(1002, { from: accounts[5] });
+      await contract.getWaifu(1003, { from: accounts[8] });
       var punkIndex = 1001;
       var firstOwner = accounts[1];
       var bidder = accounts[0];
@@ -86,17 +86,17 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       assert.equal(firstOwner, initialOwner);
       // Bidder bids on punk
       var accountBalancePrev = await web3.eth.getBalance(bidder);
-      await contract.enterBidForPunk(punkIndex, {
+      await contract.enterBidForWaifu(punkIndex, {
         from: bidder,
         value: bidPrice,
       });
       // Owner transfers it to New Owner
-      await contract.transferPunk(newOwner, punkIndex, { from: firstOwner });
+      await contract.transferWaifu(newOwner, punkIndex, { from: firstOwner });
       // New owner accepts original bid
       var pendingAmount = await contract.pendingWithdrawals.call(bidder);
       assert.equal(0, pendingAmount);
       // console.log("Prev acc0: " + accountBalancePrev);
-      await contract.acceptBidForPunk(punkIndex, bidPrice, { from: newOwner });
+      await contract.acceptBidForWaifu(punkIndex, bidPrice, { from: newOwner });
       // Make sure A0 was charged
       var accountBalance = await web3.eth.getBalance(bidder);
       //console.log("Post acc0: " + accountBalance);
@@ -130,17 +130,17 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       var initialOwner = await contract.punkIndexToAddress.call(punkIndex);
       assert.equal(firstOwner, initialOwner);
       // Bidder bids on punk
-      await contract.enterBidForPunk(punkIndex, {
+      await contract.enterBidForWaifu(punkIndex, {
         from: bidder,
         value: bidPrice,
       });
       // Owner offers it for sale
-      await contract.offerPunkForSale(punkIndex, salePrice, {
+      await contract.offerWaifuForSale(punkIndex, salePrice, {
         from: firstOwner,
       });
       // Buyer buys
       var accountBalancePrev = await web3.eth.getBalance(buyer);
-      await contract.buyPunk(punkIndex, { from: buyer, value: salePrice });
+      await contract.buyWaifu(punkIndex, { from: buyer, value: salePrice });
       // Make sure Buyer was charged
       var accountBalance = await web3.eth.getBalance(buyer);
       compareBalance(accountBalancePrev, accountBalance, -salePrice);
@@ -179,18 +179,18 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       // Bidder bids on punk
       console.log("About to enter bid");
       var accountBalancePrev = await web3.eth.getBalance(bidder);
-      await contract.enterBidForPunk(punkIndex, {
+      await contract.enterBidForWaifu(punkIndex, {
         from: bidder,
         value: bidPrice,
       });
       console.log("Enter bid");
       // Owner offers it for sale
-      await contract.offerPunkForSale(punkIndex, salePrice, {
+      await contract.offerWaifuForSale(punkIndex, salePrice, {
         from: firstOwner,
       });
       console.log("Offer for sale");
       // Bidder buys
-      await contract.buyPunk(punkIndex, { from: bidder, value: 15000 });
+      await contract.buyWaifu(punkIndex, { from: bidder, value: 15000 });
       console.log("Buy punk");
       // Make sure bidder was charged for both bid and sale
       var accountBalance = await web3.eth.getBalance(bidder);
@@ -235,12 +235,12 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       var initialOwner = await contract.punkIndexToAddress.call(punkIndex);
       assert.equal(firstOwner, initialOwner);
       // Bidder bids on punk
-      await contract.enterBidForPunk(punkIndex, {
+      await contract.enterBidForWaifu(punkIndex, {
         from: bidder,
         value: bidPrice,
       });
       // Owner transfers it to Bidder
-      await contract.transferPunk(bidder, punkIndex, { from: firstOwner });
+      await contract.transferWaifu(bidder, punkIndex, { from: firstOwner });
       // Check ownership
       var currentOwner = await contract.punkIndexToAddress.call(punkIndex);
       assert.equal(bidder, currentOwner);

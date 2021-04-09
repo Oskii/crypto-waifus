@@ -61,7 +61,7 @@ contract('CryptoWaifus', function (accounts) {
                         assert(false, error.toString());
                     }
                 }).then(function() {
-                    return contract.getPunk(1000);
+                    return contract.getWaifu(1000);
                 }).then(function() {
                     return contract.balanceOf.call(accounts[0]);
                 }).then(function(result) {
@@ -69,13 +69,13 @@ contract('CryptoWaifus', function (accounts) {
                     return contract.waifusRemainingToAssign();
                 }).then(function(result) {
                     assert.equal(result.valueOf(), 8999, "Should have 8999 waifus remaining to assign.");
-                    return contract.nextPunkIndexToAssign();
+                    return contract.nextWaifuIndexToAssign();
                 }).then(function(result) {
-                    assert.equal(result.valueOf(), 1000, "Punk assign index should stay at 1000.");
+                    assert.equal(result.valueOf(), 1000, "Waifu assign index should stay at 1000.");
 
                     console.log("Trying to get punk 500 when it's already assigned.");
 
-                    return contract.getPunk(500, {from: accounts[1]});
+                    return contract.getWaifu(500, {from: accounts[1]});
                 }).then(function () {
                     // console.log("Bought punk.");
                     assert(false, "Was supposed to throw but didn't.");
@@ -94,7 +94,7 @@ contract('CryptoWaifus', function (accounts) {
                     return web3.eth.sendTransaction({from:accounts[0], to:accounts[1], value: 10000000});
                 }).then(function() {
                     // Try to transfer a punk from someone who doesn't own it
-                    return contract.transferPunk(accounts[1], 1000, {from: accounts[1]});
+                    return contract.transferWaifu(accounts[1], 1000, {from: accounts[1]});
                 }).then(function (returnValue) {
                     assert(false, "Was supposed to throw but didn't.");
                 }).catch(function (error) {
@@ -111,7 +111,7 @@ contract('CryptoWaifus', function (accounts) {
                     console.log("Getting a bunch of waifus for account 1.");
                     var promises = [];
                     for (var i=0; i < 100; i++) {
-                        promises.push(contract.getPunk(1001+i, {from: accounts[1]}));
+                        promises.push(contract.getWaifu(1001+i, {from: accounts[1]}));
                     }
 
                     Promise.all(promises).then(function() {
@@ -119,16 +119,16 @@ contract('CryptoWaifus', function (accounts) {
                     }).then(function(result) {
                         console.log("Account 1 now has "+result.valueOf()+" waifus.");
                         assert.equal(result.valueOf(), 100, "Should have 100 waifus in account 1 now.");
-                        return contract.offerPunkForSale(1001, 10000, {from: accounts[1]});
+                        return contract.offerWaifuForSale(1001, 10000, {from: accounts[1]});
                     }).then(function () {
                         return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: "+offer);
-                        assert.isOk(offer[0], "Punk was not actually for sale.");
-                        assert.equal(offer[3], 10000, "Punk sale price incorrect.");
-                        assert.equal(offer[4], NULL_ACCOUNT, "Punk should be for sale to anyone.");
+                        assert.isOk(offer[0], "Waifu was not actually for sale.");
+                        assert.equal(offer[3], 10000, "Waifu sale price incorrect.");
+                        assert.equal(offer[4], NULL_ACCOUNT, "Waifu should be for sale to anyone.");
                         // Get account 0 to buy a punk, but send too little ether and expect an exception
-                        return contract.buyPunk(1001, {from: accounts[0], value: 1000});
+                        return contract.buyWaifu(1001, {from: accounts[0], value: 1000});
                     }).then(function () {
                         // console.log("Bought punk.");
                         assert(false, "Was supposed to throw but didn't.");
@@ -142,7 +142,7 @@ contract('CryptoWaifus', function (accounts) {
                         }
                         // Get account 0 to buy a punk with enough ether
                         console.log("Buying punk 1001 with correct amount of ether.");
-                        return contract.buyPunk(1001, {from: accounts[0], value: 10000});
+                        return contract.buyWaifu(1001, {from: accounts[0], value: 10000});
                     }).then(function (address) {
                         console.log("Checking punk 1001 owned by account 0.");
                         return contract.punkIndexToAddress(1001);
@@ -152,10 +152,10 @@ contract('CryptoWaifus', function (accounts) {
                         return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: "+offer);
-                        assert.equal(offer[0], false, "Punk was still for sale.");
+                        assert.equal(offer[0], false, "Waifu was still for sale.");
 
                         console.log("Making sure punk 1001 can't be bought.");
-                        return contract.buyPunk(1001, {from: accounts[2], value: 10000});
+                        return contract.buyWaifu(1001, {from: accounts[2], value: 10000});
                     }).then(function () {
                         // console.log("Bought punk.");
                         assert(false, "Was supposed to throw but didn't.");
@@ -169,11 +169,11 @@ contract('CryptoWaifus', function (accounts) {
                         }
 
                         console.log("Offer punk 1001 for sale only to account 2.");
-                        return contract.offerPunkForSaleToAddress(1001, 10000, accounts[2], {from: accounts[0]});
+                        return contract.offerWaifuForSaleToAddress(1001, 10000, accounts[2], {from: accounts[0]});
                        // return contract.punkIndexToAddress(1001);
                     }).then(function (address) {
                         console.log("Try to get account 1 to buy punk 1001 but fail.");
-                        return contract.buyPunk(1001, {from: accounts[1], value: 10000});
+                        return contract.buyWaifu(1001, {from: accounts[1], value: 10000});
                     }).then(function () {
                         // console.log("Bought punk.");
                         assert(false, "Was supposed to throw but didn't.");
@@ -187,14 +187,14 @@ contract('CryptoWaifus', function (accounts) {
                         }
                         // Get account 0 to buy a punk with enough ether
                         console.log("Buying punk 1001 with account 2 which should be allowed.");
-                        return contract.buyPunk(1001, {from: accounts[2], value: 10000});
+                        return contract.buyWaifu(1001, {from: accounts[2], value: 10000});
                     }).then(function (address) {
                         console.log("Checking punk 1001 now owned by account 2.");
                         return contract.punkIndexToAddress(1001);
                     }).then(function (address) {
                         assert.equal(accounts[2], address, "Account 2 did not buy the punk successfully.");
                         console.log("Offer punk 1001 again.");
-                        return contract.offerPunkForSale(1001, 10000, {from: accounts[2]});
+                        return contract.offerWaifuForSale(1001, 10000, {from: accounts[2]});
                     }).then(function (address) {
                         console.log("Try to make it no longer available for sale.");
                         return contract.punkNoLongerForSale(1001, {from: accounts[2]});
@@ -202,7 +202,7 @@ contract('CryptoWaifus', function (accounts) {
                         return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: " + offer);
-                        assert.equal(offer[0], false, "Punk was still for sale.");
+                        assert.equal(offer[0], false, "Waifu was still for sale.");
                         console.log("Check that punk purchase price is available for withdrawal.");
                         return contract.pendingWithdrawals(accounts[0]);
                     }).then(function (balance) {
@@ -226,7 +226,7 @@ contract('CryptoWaifus', function (accounts) {
                         console.log("Comparing only least significant digits: "+subPrevBalance+" vs. "+subCurrBalance);
                         assert.equal(Number(subCurrBalance), Number(subPrevBalance) + 10000, "Account 0 balance incorrect after withdrawal.");
                     })
-                        // return contract.nextPunkIndexToAssign();
+                        // return contract.nextWaifuIndexToAssign();
                 })
         });
     });
