@@ -11,6 +11,7 @@ contract CryptoWaifusMarket {
     string public name;
     string public symbol;
     uint8 public decimals;
+    uint16 maxWaifus = 100;
     uint256 public totalSupply;
 
     uint256 public nextWaifuIndexToAssign = 0;
@@ -81,7 +82,7 @@ contract CryptoWaifusMarket {
     function CryptoWaifusMarket() payable {
         //        balanceOf[msg.sender] = initialSupply;              // Give the creator all initial tokens
         owner = msg.sender;
-        totalSupply = 10000; // Update total supply
+        totalSupply = maxWaifus; // Update total supply
         waifusRemainingToAssign = totalSupply;
         name = "CRYPTOWAIFUS"; // Set the name for display purposes
         symbol = "Ͼ"; // Set the symbol for display purposes
@@ -91,7 +92,7 @@ contract CryptoWaifusMarket {
     function setInitialOwner(address to, uint256 waifuIndex) {
         if (msg.sender != owner) throw;
         if (allWaifusAssigned) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (waifuIndexToAddress[waifuIndex] != to) {
             if (waifuIndexToAddress[waifuIndex] != 0x0) {
                 balanceOf[waifuIndexToAddress[waifuIndex]]--;
@@ -121,7 +122,7 @@ contract CryptoWaifusMarket {
         if (!allWaifusAssigned) throw;
         if (waifusRemainingToAssign == 0) throw;
         if (waifuIndexToAddress[waifuIndex] != 0x0) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         waifuIndexToAddress[waifuIndex] = msg.sender;
         balanceOf[msg.sender]++;
         waifusRemainingToAssign--;
@@ -132,7 +133,7 @@ contract CryptoWaifusMarket {
     function transferWaifu(address to, uint256 waifuIndex) {
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (waifusOfferedForSale[waifuIndex].isForSale) {
             waifuNoLongerForSale(waifuIndex);
         }
@@ -154,7 +155,7 @@ contract CryptoWaifusMarket {
     function waifuNoLongerForSale(uint256 waifuIndex) {
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         waifusOfferedForSale[waifuIndex] = Offer(
             false,
             waifuIndex,
@@ -168,7 +169,7 @@ contract CryptoWaifusMarket {
     function offerWaifuForSale(uint256 waifuIndex, uint256 minSalePriceInWei) {
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         waifusOfferedForSale[waifuIndex] = Offer(
             true,
             waifuIndex,
@@ -186,7 +187,7 @@ contract CryptoWaifusMarket {
     ) {
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         waifusOfferedForSale[waifuIndex] = Offer(
             true,
             waifuIndex,
@@ -200,7 +201,7 @@ contract CryptoWaifusMarket {
     function buyWaifu(uint256 waifuIndex) payable {
         if (!allWaifusAssigned) throw;
         Offer offer = waifusOfferedForSale[waifuIndex];
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (!offer.isForSale) throw; // waifu not actually for sale
         if (offer.onlySellTo != 0x0 && offer.onlySellTo != msg.sender) throw; // waifu not supposed to be sold to this user
         if (msg.value < offer.minValue) throw; // Didn't send enough ETH
@@ -237,7 +238,7 @@ contract CryptoWaifusMarket {
     }
 
     function enterBidForWaifu(uint256 waifuIndex) payable {
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] == 0x0) throw;
         if (waifuIndexToAddress[waifuIndex] == msg.sender) throw;
@@ -253,7 +254,7 @@ contract CryptoWaifusMarket {
     }
 
     function acceptBidForWaifu(uint256 waifuIndex, uint256 minPrice) {
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         address seller = msg.sender;
@@ -280,7 +281,7 @@ contract CryptoWaifusMarket {
     }
 
     function withdrawBidForWaifu(uint256 waifuIndex) {
-        if (waifuIndex >= 10000) throw;
+        if (waifuIndex >= maxWaifus) throw;
         if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] == 0x0) throw;
         if (waifuIndexToAddress[waifuIndex] == msg.sender) throw;

@@ -10,7 +10,7 @@ This repo contains the Ethereum contract used to manage the Waifus, a verifiable
 
 - **How much do the waifus cost?** When we first released the project, you could claim a punk by simply paying the transaction fee of around 11 cents. Now, you have to buy a punk from someone else and need to pay the market rate, which at the moment is around 0.3 ETH (~$80 USD). See http://www.larvalabs.com/cryptowaifus for the current average price.
 - **How much is a punk worth?** Like many things, they're worth whatever someone will pay. People have spent 10 ETH (around $3,000) on the the rarest types.
-- **How were the punk images created?** With a generator that was programmed to generate waifus with a range of features and rarity. For example, there are only 88 Zombie Waifus, 24 Apes, 9 Aliens and exactly [1 Alien Punk smoking a pipe](https://www.larvalabs.com/cryptowaifus/details/7804).
+- **How were the punk images created?** With a generator that was programmed to generate waifus with a range of features and rarity. For example, there are only 88 Zombie Waifus, 24 Apes, 9 Aliens and exactly [1 Alien Waifu smoking a pipe](https://www.larvalabs.com/cryptowaifus/details/7804).
 
 ### How to Use the CryptoWaifus Contract
 
@@ -18,14 +18,14 @@ The easiest way is to use [MyEtherWallet](https://www.myetherwallet.com/#contrac
 
 Once you are watching the contract you can execute the following functions to transact waifus:
 
-- `getPunk(uint index)` to claim ownership of a punk (this is no longer useful as all 10,000 waifus have been claimed).
-- `transferPunk(address to, uint index)` transfer ownership of a punk to someone without requiring any payment.
-- `offerPunkForSale(uint punkIndex, uint minSalePriceInWei)` offer one of your waifus for sale to anyone willing to pay the minimum price specified (in Wei).
-- `offerPunkForSaleToAddress(uint punkIndex, uint minSalePriceInWei, address toAddress)` offer one of your waifus for some minumum price, but only to the address specified. Use this to sell a punk to a specific person.
-- `enterBidForPunk(uint punkIndex)` enters a bid for the punkIndex specified. Send in the amount of your bid in the value field and we will hold that ether in escrow.
-- `acceptBidForPunk(uint punkIndex, uint minPrice)` to accept a pending bid for the specified punk. You can specify a minPrice in Wei to protect yourself from someone switching the bid for a lower bid.
-- `withdrawBidForPunk(uint punkIndex)` will withdraw a bid for the specified punk and send you the ether from the bid.
-- `buyPunk(uint punkIndex)` buy punk at the specified index. That punk needs to be previously offered for sale, and you need to have sent at least the amount of Ether specified as the sale price for the punk.
+- `getWaifu(uint index)` to claim ownership of a punk (this is no longer useful as all 10,000 waifus have been claimed).
+- `transferWaifu(address to, uint index)` transfer ownership of a punk to someone without requiring any payment.
+- `offerWaifuForSale(uint punkIndex, uint minSalePriceInWei)` offer one of your waifus for sale to anyone willing to pay the minimum price specified (in Wei).
+- `offerWaifuForSaleToAddress(uint punkIndex, uint minSalePriceInWei, address toAddress)` offer one of your waifus for some minumum price, but only to the address specified. Use this to sell a punk to a specific person.
+- `enterBidForWaifu(uint punkIndex)` enters a bid for the punkIndex specified. Send in the amount of your bid in the value field and we will hold that ether in escrow.
+- `acceptBidForWaifu(uint punkIndex, uint minPrice)` to accept a pending bid for the specified punk. You can specify a minPrice in Wei to protect yourself from someone switching the bid for a lower bid.
+- `withdrawBidForWaifu(uint punkIndex)` will withdraw a bid for the specified punk and send you the ether from the bid.
+- `buyWaifu(uint punkIndex)` buy punk at the specified index. That punk needs to be previously offered for sale, and you need to have sent at least the amount of Ether specified as the sale price for the punk.
 - `withdraw()` claim all the Ether people have previously sent to buy your waifus.
 
 ### Verifying the Waifus are 100% Authentic and Legit CryptoWaifus™

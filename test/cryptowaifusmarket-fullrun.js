@@ -2,14 +2,14 @@ require("babel-polyfill");
 var CryptoWaifusMarket = artifacts.require("./CryptoWaifusMarket.sol");
 
 contract("CryptoWaifusMarket-fullRun", function (accounts) {
-  it("should have 10000 waifus available to assign", function () {
+  it("should have 100 waifus available to assign", function () {
     return CryptoWaifusMarket.deployed()
       .then(function (instance) {
         // console.log("Deployed");
         return instance.waifusRemainingToAssign.call();
       })
       .then(function (balance) {
-        assert.equal(balance.valueOf(), 10000, "10000 waifus not available.");
+        assert.equal(balance.valueOf(), 100, "100 waifus not available.");
       });
   }),
     it("should be able to complete the full buy and sell cycle", function () {
@@ -82,7 +82,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
                 100,
                 "Should have 100 waifus in account 1 now."
               );
-              return contract.offerWaifuForSale(1001, 10000, {
+              return contract.offerWaifuForSale(1001, 100, {
                 from: accounts[1],
               });
             })
@@ -92,7 +92,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
             .then(function (offer) {
               console.log("Offer for sale: " + offer);
               assert.isOk(offer[0], "Waifu was not actually for sale.");
-              assert.equal(offer[3], 10000, "Waifu sale price incorrect.");
+              assert.equal(offer[3], 100, "Waifu sale price incorrect.");
               assert.equal(
                 offer[4],
                 NULL_ACCOUNT,
@@ -117,7 +117,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               console.log("Buying punk 1001 with correct amount of ether.");
               return contract.buyWaifu(1001, {
                 from: accounts[0],
-                value: 10000,
+                value: 100,
               });
             })
             .then(function (address) {
@@ -140,7 +140,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               console.log("Making sure punk 1001 can't be bought.");
               return contract.buyWaifu(1001, {
                 from: accounts[2],
-                value: 10000,
+                value: 100,
               });
             })
             .then(function () {
@@ -159,7 +159,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               console.log("Offer punk 1001 for sale only to account 2.");
               return contract.offerWaifuForSaleToAddress(
                 1001,
-                10000,
+                100,
                 accounts[2],
                 { from: accounts[0] }
               );
@@ -169,7 +169,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               console.log("Try to get account 1 to buy punk 1001 but fail.");
               return contract.buyWaifu(1001, {
                 from: accounts[1],
-                value: 10000,
+                value: 100,
               });
             })
             .then(function () {
@@ -190,7 +190,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               );
               return contract.buyWaifu(1001, {
                 from: accounts[2],
-                value: 10000,
+                value: 100,
               });
             })
             .then(function (address) {
@@ -204,7 +204,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
                 "Account 2 did not buy the punk successfully."
               );
               console.log("Offer punk 1001 again.");
-              return contract.offerWaifuForSale(1001, 10000, {
+              return contract.offerWaifuForSale(1001, 100, {
                 from: accounts[2],
               });
             })
@@ -224,7 +224,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               return contract.pendingWithdrawals(accounts[1]);
             })
             .then(function (balance) {
-              assert.equal(balance, 10000, "Account 1 balance incorrect.");
+              assert.equal(balance, 100, "Account 1 balance incorrect.");
             })
             .then(function () {
               return web3.eth.getBalance(accounts[1]);
@@ -260,7 +260,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
               );
               return assert.equal(
                 Number(subCurrBalance),
-                Number(subPrevBalance) + 10000,
+                Number(subPrevBalance) + 100,
                 "Account 1 balance incorrect after withdrawal."
               );
             });
@@ -272,7 +272,7 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
       return CryptoWaifusMarket.deployed()
         .then(function (instance) {
           contract = instance;
-          return instance.setInitialOwner(accounts[0], 10000);
+          return instance.setInitialOwner(accounts[0], 100);
         })
         .then(function () {
           // console.log("Bought punk.");
@@ -288,13 +288,13 @@ contract("CryptoWaifusMarket-fullRun", function (accounts) {
           }
           // Get account 0 to buy a punk with enough ether
           // console.log("Buying punk 1001 with account 2 which should be allowed.");
-          // return contract.buyWaifu(1001, {from: accounts[2], value: 10000});
+          // return contract.buyWaifu(1001, {from: accounts[2], value: 100});
         });
     }),
     it("only owner can call setInitialOwner", async function () {
       var contract = await CryptoWaifusMarket.deployed();
       try {
-        await instance.setInitialOwner(accounts[1], 10000);
+        await instance.setInitialOwner(accounts[1], 100);
         assert(false, "Should have thrown exception.");
       } catch (err) {
         // Should catch an exception

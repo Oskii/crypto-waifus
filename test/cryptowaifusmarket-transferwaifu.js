@@ -57,7 +57,7 @@ contract('CryptoWaifusMarket-transferWaifu', function (accounts) {
     }),
     it("can not use invalid punk index", async function () {
       var contract = await CryptoWaifusMarket.deployed();
-      await expectThrow(contract.transferWaifu(accounts[1], 10000));
+      await expectThrow(contract.transferWaifu(accounts[1], 100));
     })
 
 });

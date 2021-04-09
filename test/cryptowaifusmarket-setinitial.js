@@ -13,14 +13,14 @@ contract("CryptoWaifusMarket-setInitial", function (accounts) {
     var remaining = await contract.waifusRemainingToAssign.call();
     assert.equal(9999, remaining);
 
-    // todo Set this back to 10000 for final runs
+    // todo Set this back to 100 for final runs
     var assignCoins = 100;
     for (var i = 1; i < assignCoins; i++) {
       await contract.setInitialOwner(accounts[0], i);
     }
 
     var remainingAfter = await contract.waifusRemainingToAssign.call();
-    assert.equal(10000 - assignCoins, remainingAfter);
+    assert.equal(100 - assignCoins, remainingAfter);
     var balanceAfter = await contract.balanceOf.call(accounts[0]);
     assert.equal(assignCoins, balanceAfter);
   }),
@@ -45,12 +45,12 @@ contract("CryptoWaifusMarket-setInitial", function (accounts) {
         assert.equal(currentOwner, owners[i]);
       }
       var remainingAfter = await contract.waifusRemainingToAssign.call();
-      assert.equal(10000 - 110, remainingAfter);
+      assert.equal(100 - 110, remainingAfter);
     }),
     it("can not pass an invalid index to assign initial", async function () {
       var contract = await CryptoWaifusMarket.deployed();
       try {
-        await contract.setInitialOwner(accounts[0], 10000);
+        await contract.setInitialOwner(accounts[0], 100);
         assert(false, "Should have thrown exception.");
       } catch (err) {
         // Should catch an exception

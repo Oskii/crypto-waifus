@@ -230,7 +230,7 @@ contract("CryptoWaifusMarket-edgecases", function (accounts) {
       var punkIndex = 501;
       var firstOwner = accounts[4];
       var bidder = accounts[3];
-      var bidPrice = 10000;
+      var bidPrice = 100;
       // Check initial ownership
       var initialOwner = await contract.punkIndexToAddress.call(punkIndex);
       assert.equal(firstOwner, initialOwner);
