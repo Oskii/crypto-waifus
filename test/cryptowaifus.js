@@ -1,55 +1,55 @@
-var CryptoPunks = artifacts.require("./CryptoPunks.sol");
+var CryptoWaifus = artifacts.require("./CryptoWaifus.sol");
 
 /*
-contract('CryptoPunks', function (accounts) {
-    it("should have 10000 punks available to assign", function () {
-        return CryptoPunks.deployed().then(function (instance) {
+contract('CryptoWaifus', function (accounts) {
+    it("should have 10000 waifus available to assign", function () {
+        return CryptoWaifus.deployed().then(function (instance) {
             // console.log("Deployed");
-            return instance.punksRemainingToAssign.call();
+            return instance.waifusRemainingToAssign.call();
         }).then(function (balance) {
-            assert.equal(balance.valueOf(), 10000, "10000 punks not available.");
+            assert.equal(balance.valueOf(), 10000, "10000 waifus not available.");
         });
     }),
-        it("should be able to reserve, buy and sell punks", function () {
+        it("should be able to reserve, buy and sell waifus", function () {
             var contract;
             var previousBalance;
-            var punksRemainingToAssign;
-            var numberOfPunksToReserve;
-            var numberOfPunksReserved;
+            var waifusRemainingToAssign;
+            var numberOfWaifusToReserve;
+            var numberOfWaifusReserved;
             var NULL_ACCOUNT = "0x0000000000000000000000000000000000000000";
 
-            return CryptoPunks.deployed().then(function (instance) {
+            return CryptoWaifus.deployed().then(function (instance) {
                 // console.log("Deployed");
                 contract = instance;
-                return instance.reservePunksForOwner(50);
+                return instance.reserveWaifusForOwner(50);
             }).then(function () {
                 return contract.balanceOf.call(accounts[0]);
             }).then(function (result) {
-                assert.equal(result.valueOf(), 50, "50 punks were not assigned to owner.");
-                return contract.punksRemainingToAssign.call();
+                assert.equal(result.valueOf(), 50, "50 waifus were not assigned to owner.");
+                return contract.waifusRemainingToAssign.call();
             }).then(function (result) {
-                assert.equal(result.valueOf(), 9950, "Incorrect remaining punks.");
-                return contract.numberOfPunksReserved.call();
+                assert.equal(result.valueOf(), 9950, "Incorrect remaining waifus.");
+                return contract.numberOfWaifusReserved.call();
             }).then(function (result) {
-                assert.equal(result.valueOf(), 50, "Count of punks reserved is incorrect.");
-                return contract.numberOfPunksToReserve.call();
+                assert.equal(result.valueOf(), 50, "Count of waifus reserved is incorrect.");
+                return contract.numberOfWaifusToReserve.call();
             }).then(function (result) {
-                assert.equal(result.valueOf(), 1000, "Count of punks to reserve is incorrect.");
-                return contract.punksRemainingToAssign.call();
+                assert.equal(result.valueOf(), 1000, "Count of waifus to reserve is incorrect.");
+                return contract.waifusRemainingToAssign.call();
             }).then(function (result) {
-                assert.equal(result.valueOf(), 9950, "Incorrect remaining punks.");
-                // reserve remaining punks
+                assert.equal(result.valueOf(), 9950, "Incorrect remaining waifus.");
+                // reserve remaining waifus
                 var reservationPromises = [];
                 for (var i=0; i < 19; i++) {
-                    reservationPromises.push(contract.reservePunksForOwner(50));
+                    reservationPromises.push(contract.reserveWaifusForOwner(50));
                 }
                 Promise.all(reservationPromises).then(function() {
                     return contract.balanceOf.call(accounts[0]);
                 }).then(function (result) {
-                    console.log("Owner of contract now has "+result.valueOf()+" punks.");
-                    assert.equal(result.valueOf(), 1000, "1000 punks were not assigned to owner.");
+                    console.log("Owner of contract now has "+result.valueOf()+" waifus.");
+                    assert.equal(result.valueOf(), 1000, "1000 waifus were not assigned to owner.");
                     // try one more reserve which should fail
-                    return contract.reservePunksForOwner(50);
+                    return contract.reserveWaifusForOwner(50);
                 }).then(function (returnValue) {
                     assert(false, "Was supposed to throw but didn't.");
                 }).catch(function (error) {
@@ -65,10 +65,10 @@ contract('CryptoPunks', function (accounts) {
                 }).then(function() {
                     return contract.balanceOf.call(accounts[0]);
                 }).then(function(result) {
-                    assert.equal(result.valueOf(), 1001, "Should have 1001 punks now.");
-                    return contract.punksRemainingToAssign();
+                    assert.equal(result.valueOf(), 1001, "Should have 1001 waifus now.");
+                    return contract.waifusRemainingToAssign();
                 }).then(function(result) {
-                    assert.equal(result.valueOf(), 8999, "Should have 8999 punks remaining to assign.");
+                    assert.equal(result.valueOf(), 8999, "Should have 8999 waifus remaining to assign.");
                     return contract.nextPunkIndexToAssign();
                 }).then(function(result) {
                     assert.equal(result.valueOf(), 1000, "Punk assign index should stay at 1000.");
@@ -107,8 +107,8 @@ contract('CryptoPunks', function (accounts) {
                     }
 
                 }).then(function() {
-                    // Give all remaining punks to account 1
-                    console.log("Getting a bunch of punks for account 1.");
+                    // Give all remaining waifus to account 1
+                    console.log("Getting a bunch of waifus for account 1.");
                     var promises = [];
                     for (var i=0; i < 100; i++) {
                         promises.push(contract.getPunk(1001+i, {from: accounts[1]}));
@@ -117,11 +117,11 @@ contract('CryptoPunks', function (accounts) {
                     Promise.all(promises).then(function() {
                         return contract.balanceOf.call(accounts[1]);
                     }).then(function(result) {
-                        console.log("Account 1 now has "+result.valueOf()+" punks.");
-                        assert.equal(result.valueOf(), 100, "Should have 100 punks in account 1 now.");
+                        console.log("Account 1 now has "+result.valueOf()+" waifus.");
+                        assert.equal(result.valueOf(), 100, "Should have 100 waifus in account 1 now.");
                         return contract.offerPunkForSale(1001, 10000, {from: accounts[1]});
                     }).then(function () {
-                        return contract.punksOfferedForSale(1001);
+                        return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: "+offer);
                         assert.isOk(offer[0], "Punk was not actually for sale.");
@@ -149,7 +149,7 @@ contract('CryptoPunks', function (accounts) {
                     }).then(function (address) {
                         assert.equal(accounts[0], address, "Did not buy the punk successfully.");
                         console.log("Making sure punk 1001 is no longer for sale.");
-                        return contract.punksOfferedForSale(1001);
+                        return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: "+offer);
                         assert.equal(offer[0], false, "Punk was still for sale.");
@@ -199,7 +199,7 @@ contract('CryptoPunks', function (accounts) {
                         console.log("Try to make it no longer available for sale.");
                         return contract.punkNoLongerForSale(1001, {from: accounts[2]});
                     }).then(function (address) {
-                        return contract.punksOfferedForSale(1001);
+                        return contract.waifusOfferedForSale(1001);
                     }).then(function (offer) {
                         console.log("Offer for sale: " + offer);
                         assert.equal(offer[0], false, "Punk was still for sale.");

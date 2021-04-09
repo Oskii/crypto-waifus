@@ -1,12 +1,12 @@
 pragma solidity ^0.4.8;
-contract CryptoPunksMarket {
+contract CryptoWaifusMarket {
 
     // You can use this hash to verify the image file containing all the waifus
     string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
 
     address owner;
 
-    string public standard = 'CryptoPunks';
+    string public standard = 'CryptoWaifus';
     string public name;
     string public symbol;
     uint8 public decimals;
@@ -14,7 +14,7 @@ contract CryptoPunksMarket {
 
     uint public nextPunkIndexToAssign = 0;
 
-    bool public allPunksAssigned = false;
+    bool public allWaifusAssigned = false;
     uint public waifusRemainingToAssign = 0;
 
     //mapping (address => uint) public addressToPunkIndex;
@@ -56,7 +56,7 @@ contract CryptoPunksMarket {
     event PunkNoLongerForSale(uint indexed waifuIndex);
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function CryptoPunksMarket() payable {
+    function CryptoWaifusMarket() payable {
         //        balanceOf[msg.sender] = initialSupply;              // Give the creator all initial tokens
         owner = msg.sender;
         totalSupply = 10000;                        // Update total supply
@@ -68,7 +68,7 @@ contract CryptoPunksMarket {
 
     function setInitialOwner(address to, uint waifuIndex) {
         if (msg.sender != owner) throw;
-        if (allPunksAssigned) throw;
+        if (allWaifusAssigned) throw;
         if (waifuIndex >= 10000) throw;
         if (waifuIndexToAddress[waifuIndex] != to) {
             if (waifuIndexToAddress[waifuIndex] != 0x0) {
@@ -92,11 +92,11 @@ contract CryptoPunksMarket {
 
     function allInitialOwnersAssigned() {
         if (msg.sender != owner) throw;
-        allPunksAssigned = true;
+        allWaifusAssigned = true;
     }
 
     function getPunk(uint waifuIndex) {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         if (waifusRemainingToAssign == 0) throw;
         if (waifuIndexToAddress[waifuIndex] != 0x0) throw;
         if (waifuIndex >= 10000) throw;
@@ -108,7 +108,7 @@ contract CryptoPunksMarket {
 
     // Transfer ownership of a waifu to another user without requiring payment
     function transferPunk(address to, uint waifuIndex) {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         if (waifuIndex >= 10000) throw;
         if (waifusOfferedForSale[waifuIndex].isForSale) {
@@ -130,7 +130,7 @@ contract CryptoPunksMarket {
     }
 
     function waifuNoLongerForSale(uint waifuIndex) {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         if (waifuIndex >= 10000) throw;
         waifusOfferedForSale[waifuIndex] = Offer(false, waifuIndex, msg.sender, 0, 0x0);
@@ -138,7 +138,7 @@ contract CryptoPunksMarket {
     }
 
     function offerPunkForSale(uint waifuIndex, uint minSalePriceInWei) {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         if (waifuIndex >= 10000) throw;
         waifusOfferedForSale[waifuIndex] = Offer(true, waifuIndex, msg.sender, minSalePriceInWei, 0x0);
@@ -146,7 +146,7 @@ contract CryptoPunksMarket {
     }
 
     function offerPunkForSaleToAddress(uint waifuIndex, uint minSalePriceInWei, address toAddress) {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         if (waifuIndex >= 10000) throw;
         waifusOfferedForSale[waifuIndex] = Offer(true, waifuIndex, msg.sender, minSalePriceInWei, toAddress);
@@ -154,7 +154,7 @@ contract CryptoPunksMarket {
     }
 
     function buyPunk(uint waifuIndex) payable {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         Offer offer = waifusOfferedForSale[waifuIndex];
         if (waifuIndex >= 10000) throw;
         if (!offer.isForSale) throw;                // waifu not actually for sale
@@ -184,7 +184,7 @@ contract CryptoPunksMarket {
     }
 
     function withdraw() {
-        if (!allPunksAssigned) throw;
+        if (!allWaifusAssigned) throw;
         uint amount = pendingWithdrawals[msg.sender];
         // Remember to zero the pending refund before
         // sending to prevent re-entrancy attacks
@@ -194,7 +194,7 @@ contract CryptoPunksMarket {
 
     function enterBidForPunk(uint waifuIndex) payable {
         if (waifuIndex >= 10000) throw;
-        if (!allPunksAssigned) throw;                
+        if (!allWaifusAssigned) throw;                
         if (waifuIndexToAddress[waifuIndex] == 0x0) throw;
         if (waifuIndexToAddress[waifuIndex] == msg.sender) throw;
         if (msg.value == 0) throw;
@@ -210,7 +210,7 @@ contract CryptoPunksMarket {
 
     function acceptBidForPunk(uint waifuIndex, uint minPrice) {
         if (waifuIndex >= 10000) throw;
-        if (!allPunksAssigned) throw;                
+        if (!allWaifusAssigned) throw;                
         if (waifuIndexToAddress[waifuIndex] != msg.sender) throw;
         address seller = msg.sender;
         Bid bid = waifuBids[waifuIndex];
@@ -231,7 +231,7 @@ contract CryptoPunksMarket {
 
     function withdrawBidForPunk(uint waifuIndex) {
         if (waifuIndex >= 10000) throw;
-        if (!allPunksAssigned) throw;                
+        if (!allWaifusAssigned) throw;                
         if (waifuIndexToAddress[waifuIndex] == 0x0) throw;
         if (waifuIndexToAddress[waifuIndex] == msg.sender) throw;
         Bid bid = waifuBids[waifuIndex];
